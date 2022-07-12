@@ -31,7 +31,7 @@ namespace DelaunayTriangulation
             }
             else
             {
-                MessageBox.Show("Ошибка! Попытка создать многоугольник из менее 3х точек!");
+                MessageBox.Show("Error! Attempt to create a polygon of less than 3 points!");
                 return;
             }
         }
@@ -46,13 +46,13 @@ namespace DelaunayTriangulation
 
             geometryDrawing.Pen = new Pen(Brushes.Black, 0.02);
 
-            // Рисуем вершины многоугольника
+            // Draw the vertices of the polygon
             for (int i = 0; i < points.Count; i++)
             {
                 geometryGroup.Children.Add(new EllipseGeometry(points[i], 0.01, 0.01));
             }
 
-            /* Алгоритм на случай, если нужно нарисовать многоугольник
+            /* Algorithm in case you need to draw a polygon
             for (int i = 1; i < points.Count; i++)
             {
                 LineGeometry lineFromPolygon = new LineGeometry(points[i - 1], points[i]);
@@ -75,7 +75,7 @@ namespace DelaunayTriangulation
                 Filter = "Text documents (.txt)|*.txt"
             };
 
-            string text = "Координаты точек:";
+            string text = "Coordinates of points:";
             for (int i = 0; i < points.Count; i++)
             {
                 text += "\n" + Math.Round(points[i].X * 10, 2) + " " + Math.Round(points[i].Y * 10, 2);
@@ -86,7 +86,7 @@ namespace DelaunayTriangulation
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, fileText);
             else
-                MessageBox.Show("Ошибка при сохранении файла!");
+                MessageBox.Show("Error saving the file!");
         }
 
         private List<Point> CreatingRandomPolygon()
@@ -104,7 +104,7 @@ namespace DelaunayTriangulation
                 points.Add(new Point(x, y));
             }
 
-            // Удаляем совпадающие точки
+            // Removing matching points
             for (int i = 0; i < points.Count - 1; i++)
             {
                 for (int j = i + 1; j < points.Count; j++)
@@ -166,13 +166,13 @@ namespace DelaunayTriangulation
             return true;
         }
 
-        private void ArrayNumbersNormalization(List<double> arrayNumbers) //Нормализация для построения графика
+        private void ArrayNumbersNormalization(List<double> arrayNumbers) // Normalization for plotting
         {
-            if (arrayNumbers.Count % 2 != 0) //Для составления точек нужно чётное количество чисел (для х и у)
+            if (arrayNumbers.Count % 2 != 0) // To add points, you need an even number of numbers (for x and y)
                 arrayNumbers.RemoveAt(arrayNumbers.Count);
 
-            //На графике цифры от 0 до 10, но на самом деле строятся точки от 0 до 1
-            //(цифры от 0 до 10 умножены на 0.1)
+            // The numbers on the graph are in the range from 0 to 10, but in fact the graph shows points from 0 to 1
+            // (digits from 0 to 10 multiplied by 0.1)
             for (int i = 0; i < arrayNumbers.Count; i++)
             {
                 if (arrayNumbers[i] < 0)
@@ -181,133 +181,11 @@ namespace DelaunayTriangulation
                     arrayNumbers[i] *= 0.1;
             }
 
-            //Оставляем число до 2 знака после запятой: *,**
+            // Up to 2 decimal places: *,**
             for (int i = 0; i < arrayNumbers.Count; i++)
             {
                 arrayNumbers[i] = Math.Round(arrayNumbers[i], 2);
             }
-        }
-
-        private bool IsSelfIntersection()
-        {
-            if (points.Count == 3)
-            {
-                return false;
-            }
-
-            for (int i = 1; i < points.Count - 1; i++)
-            {
-                for (int j = i + 2; j < points.Count; j++)
-                {
-                    if (IsIntersectionOfTwoLineSegments(points[i - 1], points[i], points[j - 1], points[j]))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // Проверка для стороны, образующейся первой и последней точками
-            for (int i = 2; i < points.Count - 1; i++)
-            {
-                if (IsIntersectionOfTwoLineSegments(points[points.Count - 1], points[0], points[i - 1], points[i]))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsIntersectionOfTwoLineSegments(Point a, Point b, Point c, Point d)
-        {
-            Point p1 = a;
-            Point p2 = b;
-            Point p3 = c;
-            Point p4 = d;
-            // Сначала расставим точки по порядку, то есть чтобы было p1.X <= p2.X
-            if (p2.X < p1.X)
-            {
-                Point tmp = p1;
-                p1 = p2;
-                p2 = tmp;
-            }
-
-            // и p3.x <= p4.x
-            if (p4.X < p3.X)
-            {
-                Point tmp = p3;
-                p3 = p4;
-                p4 = tmp;
-            }
-
-            // Проверим существование потенциального интервала для точки пересечения отрезков
-            if (p2.X < p3.X)
-                return false; // Так как у отрезков нету взаимной абсциссы
-
-            // Если оба отрезка вертикальные
-            if ((p1.X - p2.X == 0) && (p3.X - p4.X == 0))
-            {
-                if (p1.X == p3.X) // Если они лежат на одном X
-                {
-                    // Проверим пересекаются ли они, т.е. есть ли у них общий Y
-                    // Для этого возьмём отрицание от случая, когда они НЕ пересекаются
-                    if (!((Math.Max(p1.Y, p2.Y) < Math.Min(p3.Y, p4.Y)) ||
-                        (Math.Min(p1.Y, p2.Y) > Math.Max(p3.Y, p4.Y))))
-                        return true;
-
-                }
-                return false;
-            }
-
-            // Найдём коэффициенты уравнений, содержащих отрезки
-            // f1(x) = A1*x + b1 = y
-            // f2(x) = A2*x + b2 = y
-
-            double Xa, A2, b2, Ya, A1, b1;
-
-            // Если первый отрезок вертикальный
-            if (p1.X - p2.X == 0)
-            {
-                // Найдём Xa, Ya - точки пересечения двух прямых
-                Xa = p1.X;
-                A2 = (p3.Y - p4.Y) / (p3.X - p4.X);
-                b2 = p3.Y - A2 * p3.X;
-                Ya = A2 * Xa + b2;
-
-                if (p3.X <= Xa && p4.X >= Xa && Math.Min(p1.Y, p2.Y) <= Ya && Math.Max(p1.Y, p2.Y) >= Ya)
-                    return true;
-                return false;
-            }
-
-            if (p3.X - p4.X == 0) // Если второй отрезок вертикальный
-            {
-                // Найдём Xa, Ya - точки пересечения двух прямых
-                Xa = p3.X;
-                A1 = (p1.Y - p2.Y) / (p1.X - p2.X);
-                b1 = p1.Y - A1 * p1.X;
-                Ya = A1 * Xa + b1;
-
-                if (p1.X <= Xa && p2.X >= Xa && Math.Min(p3.Y, p4.Y) <= Ya && Math.Max(p3.Y, p4.Y) >= Ya)
-                    return true;
-                return false;
-            }
-
-            // Оба отрезка невертикальные
-            A1 = (p1.Y - p2.Y) / (p1.X - p2.X);
-            A2 = (p3.Y - p4.Y) / (p3.X - p4.X);
-            b1 = p1.Y - A1 * p1.X;
-            b2 = p3.Y - A2 * p3.X;
-
-            if (A1 == A2)
-                return false; // Отрезки параллельны
-
-            Xa = (b2 - b1) / (A1 - A2); //Xa - абсцисса точки пересечения двух прямых
-
-            if ((Xa < Math.Max(p1.X, p3.X)) || (Xa > Math.Min(p2.X, p4.X)))
-                return false; // Точка Xa находится вне пересечения проекций отрезков на ось X
-
-            else
-                return true;
         }
 
         private string GetTextFromFile(string filename)

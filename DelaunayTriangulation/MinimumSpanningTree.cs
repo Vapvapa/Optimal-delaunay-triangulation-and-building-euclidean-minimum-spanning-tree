@@ -56,16 +56,16 @@ namespace DelaunayTriangulation
             for (int i = 0; i < numberNodes; i++)
                 notUsedNodes.Add(i);
 
-            // Выбор случайной начальной вершины
+            // Selecting a random starting vertex
             Random random = new Random();
             usedNodes.Add(random.Next(0, numberNodes));
             notUsedNodes.RemoveAt(usedNodes[0]);
 
             while (notUsedNodes.Count > 0)
             {
-                int minE = -1; // Номер наименьшего ребра
+                int minE = -1; // The number of the smallest edge
 
-                for (int i = 0; i < notUsedEdges.Count; i++) // Поиск наименьшего ребра
+                for (int i = 0; i < notUsedEdges.Count; i++) // Finding the smallest edge
                 {
                     if ((usedNodes.IndexOf(notUsedEdges[i].v1Index) != -1) && (notUsedNodes.IndexOf(notUsedEdges[i].v2Index) != -1) ||
                         (usedNodes.IndexOf(notUsedEdges[i].v2Index) != -1) && (notUsedNodes.IndexOf(notUsedEdges[i].v1Index) != -1))
@@ -80,7 +80,7 @@ namespace DelaunayTriangulation
                     }
                 }
 
-                // Заносим новую вершину в список использованных и удаляем ее из списка неиспользованных
+                // Adding a new vertex to the used list and removing it from the unused list
                 if (usedNodes.IndexOf(notUsedEdges[minE].v1Index) != -1)
                 {
                     usedNodes.Add(notUsedEdges[minE].v2Index);
@@ -92,7 +92,7 @@ namespace DelaunayTriangulation
                     notUsedNodes.Remove(notUsedEdges[minE].v1Index);
                 }
 
-                // Заносим новое ребро в дерево и удаляем его из списка неиспользованных
+                // Adding a new edge to the tree and removing it from the unused list
                 treeMinimumEdges.Add(notUsedEdges[minE]);
                 notUsedEdges.RemoveAt(minE);
             }

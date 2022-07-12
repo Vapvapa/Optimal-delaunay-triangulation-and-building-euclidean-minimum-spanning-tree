@@ -61,8 +61,8 @@ namespace DelaunayTriangulation
         }
 
         private void CreateLocalRearrangementOfTriangles()
-        { // Для каждого из двух треугольников, имеющих общее ребро проверяем,
-          // уменьшится ли его длина при перестроении. Если да - перестраиваем
+        { // For each of the two triangles having a common edge, we check,
+          // whether its length will decrease when rebuilding. If yes, we are rebuilding
             for (int i = 0; i < triangles.Count - 1; i++)
             {
                 for (int j = i + 1; j < triangles.Count; j++)
@@ -85,7 +85,7 @@ namespace DelaunayTriangulation
                         for (int tJj = 0; tJj < 3; tJj++)
                         {
                             if (tI[tIi].X == tJ[tJj].X && tI[tIi].Y == tJ[tJj].Y && indexI == -1 && isNotTwo)
-                            { // Запоминаем первое совпадение точек
+                            { // Memorizing the first match of points
                                 indexI = tIi;
                                 indexJ = tJj;
                                 isNotTwo = false;
@@ -95,7 +95,6 @@ namespace DelaunayTriangulation
                             {
                                 int changeI = 3 - indexI - tIi;
                                 int changeJ = 3 - indexJ - tJj;
-                                //MessageBox.Show(tI[tIi] + "; " + tI[indexI] + "; " + tI[changeI] + "; " + tJ[changeJ]);
                                 if (IsTwoSidesIntersect(tI[changeI], tJ[changeJ], tI[indexI], tI[tIi]) &&
 
                                     Math.Sqrt((tI[changeI].X - tJ[changeJ].X) * (tI[changeI].X - tJ[changeJ].X) +
@@ -103,7 +102,7 @@ namespace DelaunayTriangulation
                                     Math.Sqrt((tI[indexI].X - tI[tIi].X) * (tI[indexI].X - tI[tIi].X) +
                                     (tI[indexI].Y - tI[tIi].Y) * (tI[indexI].Y - tI[tIi].Y)))
                                 {
-                                    for (int k = 0; k < edges.Count; k++) // Удаляем старое ребро и добавляем новое
+                                    for (int k = 0; k < edges.Count; k++) // Removing the old edge and adding a new one
                                     {
                                         if (edges[k].Item1.X == tI[indexI].X && edges[k].Item1.Y == tI[indexI].Y &&
                                             edges[k].Item2.X == tI[tIi].X && edges[k].Item2.Y == tI[tIi].Y ||
@@ -132,18 +131,18 @@ namespace DelaunayTriangulation
 
         private void CreateBasicTriangulation()
         {
-            // Алгоритм
-            // Берём ребро, находим ближайшую к нему не рассмотренную точку.
-            // Если она входит в какую-нибудь окружность, описывающую треугольник из построенных -
-            // удаляем ближайшее ребро этого треульника.
-            // Из получившегося многоугольника из всех его узлов достраиваем рёбра до точки.
-            // Берём ребро этой точки, находим ближайшую к нему не рассмотренную точку. И так далее.
+            // Algorithm
+            // We take an edge, find the nearest point not considered to it.
+            // If it is included in some circle describing a triangle of those that are constructed
+            // we remove the nearest edge of this triangle.
+            // From the resulting polygon, from all its nodes, we complete the edges to a point.
+            // We take the edge of this point, find the nearest point not considered to it. Etc.
 
             List<Point> nodesAdded = new List<Point>();
             List<Point> nodesNotAdded = new List<Point>();
             nodesNotAdded.AddRange(nodes);
 
-            // Создаём первый треугольник из первой стороны и ближайшей к ней точке
+            // Creating the first triangle from the first side and the point closest to it
             edges.Add((nodes[0], nodes[1]));
             int minI = 2;
             double minDistance = GetDistanceToSegment(nodes[2], nodes[0], nodes[1]);
@@ -168,8 +167,8 @@ namespace DelaunayTriangulation
             nodesAdded.Add(nodes[minI]);
 
             Point nowA, nowB;
-            if (minI == 2) // Берём ребро, не являющееся ребром многоугольника
-            { // (оптимизация, чтобы не перестраивать только что построенный треугольник)
+            if (minI == 2) // Taking an edge that is not an edge of the polygon
+            { // (optimization so as not to rebuild the newly constructed triangle)
                 nowA = nodes[0];
                 nowB = nodes[2];
             }
@@ -181,7 +180,7 @@ namespace DelaunayTriangulation
 
             while (nodesNotAdded.Count > 0)
             {
-                // Находим точку, ближайшую к текущему ребру
+                // Find the point closest to the current edge
                 minI = 0;
                 minDistance = GetDistanceToSegment(nodesNotAdded[minI], nowA, nowB);
                 for (int i = 1; i < nodesNotAdded.Count(); i++)
@@ -194,14 +193,13 @@ namespace DelaunayTriangulation
                     }
                 }
 
-                // Проходимся по треугольникам
                 for (int i = 0; i < triangles.Count; i++)
                 {
-                    // Если описанная окружность треугольника содержит найденную точку
+                    // If the circumscribed circle of the triangle contains the found point
                     if (IsPointInsideCircumscribedCircle(nodesNotAdded[minI],
                         triangles[i].Item1, triangles[i].Item2, triangles[i].Item3))
                     {
-                        // Находим дальнюю вершину и удаляем ребро напротив неё
+                        // Find the far vertex and remove the edge opposite it
                         string farthestNode = SearctNodeFarthestFromPoint(nodesNotAdded[minI],
                             triangles[i].Item1, triangles[i].Item2, triangles[i].Item3);
                         Point a, b;
@@ -220,7 +218,7 @@ namespace DelaunayTriangulation
                             a = triangles[i].Item1;
                             b = triangles[i].Item2;
                         }
-                        for (int j = 0; j < edges.Count; j++) // Удаляем ближайшее к точке ребро
+                        for (int j = 0; j < edges.Count; j++) // Removing the edge closest to the point
                         {
                             if (edges[j].Item1.X == a.X && edges[j].Item1.Y == a.Y &&
                                 edges[j].Item2.X == b.X && edges[j].Item2.Y == b.Y ||
@@ -232,8 +230,8 @@ namespace DelaunayTriangulation
                             }
                         }
 
-                        // Добавляем 2 треугольника, образующихся из 3х рёбер
-                        // от трёх вершин найденного треугольника
+                        // Add 2 triangles formed from 3 edges
+                        // from the three vertices of the found triangle
                         edges.Add((new Point(triangles[i].Item1.X, triangles[i].Item1.Y), new Point(nodesNotAdded[minI].X, nodesNotAdded[minI].Y)));
                         edges.Add((new Point(triangles[i].Item2.X, triangles[i].Item2.Y), new Point(nodesNotAdded[minI].X, nodesNotAdded[minI].Y)));
                         edges.Add((new Point(triangles[i].Item3.X, triangles[i].Item3.Y), new Point(nodesNotAdded[minI].X, nodesNotAdded[minI].Y)));
@@ -244,23 +242,22 @@ namespace DelaunayTriangulation
                             new Point(triangles[i].Item3.X, triangles[i].Item3.Y)));
 
                         triangles.RemoveAt(i);
-                        MessageBox.Show("Содержит внутри!");
                     }
                 }
 
-                // Соединяем точку nodesNotAdded[minI] со всеми рёбрами триангуляции так,
-                // чтобы при соединении не было пересечений с уже построенными рёбрами.
-                // То есть соединяем точку со всеми "видимыми ей вершинами, не загороженными другими рёбрами"
+                // We connect the nodesNotAdded[minI] point with all the edges of the triangulation like this,
+                // so that when connecting there are no intersections with already constructed edges.
+                // That is, we connect the point with all "vertices visible to it, not blocked by other edges"
                 List<Point> nodesVisible = new List<Point>();
-                for (int i = 0; i < nodesAdded.Count; i++) // Перебираем рёбра (nodesAdded[i], nodesNotAdded[minI])
+                for (int i = 0; i < nodesAdded.Count; i++) // Edges (nodesAdded[i], nodesNotAdded[minI])
                 {
                     bool notIntersection = true;
-                    for (int j = 0; j < edges.Count; j++) // Перебираем рёбра из текущей триангуляции
+                    for (int j = 0; j < edges.Count; j++) // Iterating over the edges from the current triangulation
                     {
-                        if (// Если nodesAdded[i] не является точкой ребра
+                        if (// If nodesAdded[i] is not an edge point
                             !(nodesAdded[i].X == edges[j].Item1.X && nodesAdded[i].Y == edges[j].Item1.Y ||
                             nodesAdded[i].X == edges[j].Item2.X && nodesAdded[i].Y == edges[j].Item2.Y))
-                        { // И если рёбра пересекаются
+                        { // And if the edges intersect
                             if (IsTwoSidesIntersect(nodesAdded[i], nodesNotAdded[minI],
                             edges[j].Item1, edges[j].Item2))
                             {
@@ -276,9 +273,9 @@ namespace DelaunayTriangulation
                     }
                 }
 
-                // Соединяем текущую точку с видимыми ей точками
-                // Точки в nodesVisible не отсортированы, поэтому нужно составлять из них треугольники на основе
-                // двух, если они образуют ребро триангуляции
+                // Connecting the current point with the points visible to it
+                // Points in nodesVisible they are not sorted, so you need to make triangles out of them based on
+                // two if they form an edge of the triangulation
                 for (int i = 0; i < nodesVisible.Count - 1; i++)
                 {
                     for (int j = i; j < nodesVisible.Count; j++)
@@ -300,7 +297,7 @@ namespace DelaunayTriangulation
                     }
                 }
 
-                // Берём следующее ребро, берём последнее добавленное
+                // Take the next edge, take the last one added
                 nowA = new Point(edges[edges.Count - 1].Item1.X, edges[edges.Count - 1].Item1.Y);
                 nowB = new Point(edges[edges.Count - 1].Item2.X, edges[edges.Count - 1].Item2.Y);
 
@@ -308,7 +305,7 @@ namespace DelaunayTriangulation
                 nodesNotAdded.RemoveAt(minI);
             }
 
-            // Удаляем повторяющееся
+            // Removing duplicate
             for (int i = 0; i < edges.Count - 1; i++)
             {
                 for (int j = i + 1; j < edges.Count; j++)
@@ -376,7 +373,7 @@ namespace DelaunayTriangulation
         }
 
         private static double GetDistanceToSegment(Point pt, Point a, Point b)
-        { // Используемый метод описан здесь: https://ru.stackoverflow.com/questions/721414/Евклидова-геометрия-Расстояние-от-точки-до-отрезка
+        { // The method used is described here: https://ru.stackoverflow.com/questions/721414/Евклидова-геометрия-Расстояние-от-точки-до-отрезка
             double t = ((pt.X - a.X) * (b.X - a.X) + (pt.Y - a.Y) * (b.Y - a.Y)) /
                 ((b.X - a.X) * (b.X - a.X) + (b.Y - a.Y) * (b.Y - a.Y));
 
@@ -385,7 +382,7 @@ namespace DelaunayTriangulation
             if (t > 1)
                 t = 1;
 
-            // Используем формулу Хари:
+            // Use the Hari formula:
             return Math.Sqrt((a.X - pt.X + (b.X - a.X) * t) * (a.X - pt.X + (b.X - a.X) * t) +
                              (a.Y - pt.Y + (b.Y - a.Y) * t) * (a.Y - pt.Y + (b.Y - a.Y) * t));
         }
@@ -403,167 +400,63 @@ namespace DelaunayTriangulation
 
         private bool IsTwoSidesIntersect(Point a0, Point a1, Point b0, Point b1) // true if a0a1 and b0b1 is intersect
         {
-            //Подробнее: http://espressocode.top/check-if-two-given-line-segments-intersect/
+            // More detailed: http://espressocode.top/check-if-two-given-line-segments-intersect/
 
-            // Находим четыре ориентации, необходимые для общего и особого случаев
+            // Find four orientations necessary for general and special cases
             int o1 = Orientation(a0, a1, b0);
             int o2 = Orientation(a0, a1, b1);
             int o3 = Orientation(b0, b1, a0);
             int o4 = Orientation(b0, b1, a1);
 
-            // Общий случай
+            // General case
             if (o1 != o2 && o3 != o4)
                 return true;
 
 
-            // Особые случаи
-            // a0, a1 и b0 коллинеарны, а b0 лежит на отрезке a0a1
+            // Special cases
+            // a0, a1 and b0 are collinear, and b0 lies on the segment a0a1
             if (o1 == 0 && IsOnSegment(a0, b0, a1))
                 return true;
 
-            // a0, a1 и b1 коллинеарны, а b1 лежит на отрезке a0a1
+            // a0, a1 are b1 are collinear, and b1 lies on the segment a0a1
             if (o2 == 0 && IsOnSegment(a0, b1, a1))
                 return true;
 
-            // b0, b1 и a0 коллинеарны, а a0 лежит на отрезке b0b1
+            // b0, b1 are a0 are collinear, and a0 lies on the segment b0b1
             if (o3 == 0 && IsOnSegment(b0, a0, b1))
                 return true;
 
-            // b0, b1 и a1 коллинеарны, а a1 лежит на отрезке b0b1
+            // b0, b1 are a1 are collinear, and a1 lies on the segment b0b1
             if (o4 == 0 && IsOnSegment(b0, a1, b1))
                 return true;
 
-            return false; // Не попадает ни в один из вышеперечисленных случаев
+            return false; // Does not fall into any of the above cases
         }
 
         private int Orientation(Point a, Point b, Point c)
         {
-            // Найти ориентацию упорядоченного триплета (a, b, c).
-            // Функция возвращает следующие значения
-            // 0 -> a, b и c являются коллинеарными
-            // 1 -> по часовой стрелке
-            // -1 -> против часовой стрелки
+            // Find the orientation of an ordered triplet (a, b, c).
+            // The function returns the following values
+            // 0 -> a, b and c are collinear
+            // 1 -> clockwise
+            // -1 -> counterclockwise
 
-            // Подробнее о формуле ниже: Https://www.geeksforgeeks.org/orientation-3-ordered-points/amp/
-
+            // Read more about the formula below: Https://www.geeksforgeeks.org/orientation-3-ordered-points/amp/
             double val = (b.Y - a.Y) * (c.X - b.X) - (b.X - a.X) * (c.Y - b.Y);
 
-            if (val == 0) // коллинеар
+            if (val == 0) // collinear
                 return 0;
 
-            return (val > 0) ? 1 : -1; // по часовой или против часовой стрелки
+            return (val > 0) ? 1 : -1; // clockwise or counterclockwise
         }
 
         private bool IsOnSegment(Point a, Point b, Point c)
         {
-            // Учитывая три коллинеарных точки a, b, c, функция проверяет, точка b лежит на отрезке прямой ac
-            if (b.X <= Max(a.X, c.X) && b.X >= Min(a.X, c.X) && b.Y <= Max(a.Y, c.Y) && b.Y >= Min(a.Y, c.Y))
+            // Given three collinear points a, b, c, the function checks if point b lies on a line segment ac
+            if (b.X <= Math.Max(a.X, c.X) && b.X >= Math.Min(a.X, c.X) && b.Y <= Math.Max(a.Y, c.Y) && b.Y >= Math.Min(a.Y, c.Y))
                 return true;
 
             return false;
-        }
-
-        private double Max(double x, double y)
-        {
-            return (x >= y) ? x : y;
-        }
-
-        private double Min(double x, double y)
-        {
-            return (x >= y) ? y : x;
-        }
-
-
-        private bool IsIntersectionOfTwoLineSegments(Point ptA0, Point ptA1, Point ptB0, Point ptB1)
-        {
-            Point p1 = ptA0;
-            Point p2 = ptA1;
-            Point p3 = ptB0;
-            Point p4 = ptB1;
-            // Сначала расставим точки по порядку, то есть чтобы было p1.X <= p2.X
-            if (p2.X < p1.X)
-            {
-                Point tmp = p1;
-                p1 = p2;
-                p2 = tmp;
-            }
-
-            // и p3.x <= p4.x
-            if (p4.X < p3.X)
-            {
-                Point tmp = p3;
-                p3 = p4;
-                p4 = tmp;
-            }
-
-            // Проверим существование потенциального интервала для точки пересечения отрезков
-            if (p2.X < p3.X)
-                return false; // Так как у отрезков нету взаимной абсциссы
-
-            // Если оба отрезка вертикальные
-            if ((p1.X - p2.X == 0) && (p3.X - p4.X == 0))
-            {
-                if (p1.X == p3.X) // Если они лежат на одном X
-                {
-                    // Проверим пересекаются ли они, т.е. есть ли у них общий Y
-                    // Для этого возьмём отрицание от случая, когда они НЕ пересекаются
-                    if (!((Math.Max(p1.Y, p2.Y) < Math.Min(p3.Y, p4.Y)) ||
-                        (Math.Min(p1.Y, p2.Y) > Math.Max(p3.Y, p4.Y))))
-                        return true;
-
-                }
-                return false;
-            }
-
-            // Найдём коэффициенты уравнений, содержащих отрезки
-            // f1(x) = A1*x + b1 = y
-            // f2(x) = A2*x + b2 = y
-
-            double Xa, A2, b2, Ya, A1, b1;
-
-            // Если первый отрезок вертикальный
-            if (p1.X - p2.X == 0)
-            {
-                // Найдём Xa, Ya - точки пересечения двух прямых
-                Xa = p1.X;
-                A2 = (p3.Y - p4.Y) / (p3.X - p4.X);
-                b2 = p3.Y - A2 * p3.X;
-                Ya = A2 * Xa + b2;
-
-                if (p3.X <= Xa && p4.X >= Xa && Math.Min(p1.Y, p2.Y) <= Ya && Math.Max(p1.Y, p2.Y) >= Ya)
-                    return true;
-                return false;
-            }
-
-            if (p3.X - p4.X == 0) // Если второй отрезок вертикальный
-            {
-                // Найдём Xa, Ya - точки пересечения двух прямых
-                Xa = p3.X;
-                A1 = (p1.Y - p2.Y) / (p1.X - p2.X);
-                b1 = p1.Y - A1 * p1.X;
-                Ya = A1 * Xa + b1;
-
-                if (p1.X <= Xa && p2.X >= Xa && Math.Min(p3.Y, p4.Y) <= Ya && Math.Max(p3.Y, p4.Y) >= Ya)
-                    return true;
-                return false;
-            }
-
-            // Оба отрезка невертикальные
-            A1 = (p1.Y - p2.Y) / (p1.X - p2.X);
-            A2 = (p3.Y - p4.Y) / (p3.X - p4.X);
-            b1 = p1.Y - A1 * p1.X;
-            b2 = p3.Y - A2 * p3.X;
-
-            if (A1 == A2)
-                return false; // Отрезки параллельны
-
-            Xa = (b2 - b1) / (A1 - A2); //Xa - абсцисса точки пересечения двух прямых
-
-            if ((Xa < Math.Max(p1.X, p3.X)) || (Xa > Math.Min(p2.X, p4.X)))
-                return false; // Точка Xa находится вне пересечения проекций отрезков на ось X
-
-            else
-                return true;
         }
     }
 }

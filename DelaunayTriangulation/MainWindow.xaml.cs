@@ -65,7 +65,6 @@ namespace DelaunayTriangulation
 
             geometryDrawing.Brush = Brushes.Black;
             geometryDrawing.Pen = new Pen(Brushes.Gray, 0.001);
-            //geometryDrawing.Pen.DashStyle = DashStyles.Dot; // Можно попробовать заменить пунктир на точки
 
             DoubleCollection dashes = new DoubleCollection();
             for (int i = 1; i < 10; i++)
@@ -138,7 +137,7 @@ namespace DelaunayTriangulation
             if (result == true)
                 polygon = new Polygon(openFileDialog.FileName);
             else
-                MessageBox.Show("Ошибка при открытии файла!");
+                MessageBox.Show("Error opening the file!");
 
             polygon.DrawPolygon(drawingGroup);
             image.Source = new DrawingImage(drawingGroup);
