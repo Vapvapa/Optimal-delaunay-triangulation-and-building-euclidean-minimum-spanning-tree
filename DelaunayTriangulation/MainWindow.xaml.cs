@@ -21,11 +21,12 @@ namespace DelaunayTriangulation
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Polygon polygon = new Polygon(new List<Point>() { new Point(8, 1), new Point(7, 3), new Point(3, 1) });
+        private Polygon polygon = new Polygon();
         private Triangulation triangulation = new Triangulation();
         public MainWindow()
         {
             InitializeComponent();
+            polygon = new Polygon();
             DrawingImageInForm();
         }
 
@@ -137,7 +138,10 @@ namespace DelaunayTriangulation
             if (result == true)
                 polygon = new Polygon(openFileDialog.FileName);
             else
+            {
                 MessageBox.Show("Error opening the file!");
+                polygon = new Polygon();
+            }
 
             polygon.DrawPolygon(drawingGroup);
             image.Source = new DrawingImage(drawingGroup);
@@ -156,8 +160,8 @@ namespace DelaunayTriangulation
             triangulation = new Triangulation(polygon);
             DrawingGroup drawingGroup = new DrawingGroup();
             DrawСoordinateSystem(drawingGroup);
-            polygon.DrawPolygon(drawingGroup);
             triangulation.DrawTriangulation(drawingGroup);
+            polygon.DrawPolygon(drawingGroup);
             image.Source = new DrawingImage(drawingGroup);
         }
 
@@ -165,10 +169,10 @@ namespace DelaunayTriangulation
         {
             DrawingGroup drawingGroup = new DrawingGroup();
             DrawСoordinateSystem(drawingGroup);
-            polygon.DrawPolygon(drawingGroup);
             triangulation.DrawTriangulation(drawingGroup);
             MinimumSpanningTree minimumSpanningTree = new MinimumSpanningTree(triangulation.GetEdges(), triangulation.GetNodes());
             minimumSpanningTree.DrawMinimumSpanningTree(drawingGroup);
+            polygon.DrawPolygon(drawingGroup);
             image.Source = new DrawingImage(drawingGroup);
         }
 

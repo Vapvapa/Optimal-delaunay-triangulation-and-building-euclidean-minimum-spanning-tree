@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DelaunayTriangulation"
         mc:Ignorable="d"
-        Title="DelaunayTriangulation" Height="450" Width="800">
+        Title="DelaunayTriangulation" Height="450" Width="800" Icon="/icon.png">
     <Grid x:Name="MainGrid" Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -21,11 +21,11 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Image Name="image" Grid.Column="0" Grid.Row="0"  Grid.ColumnSpan="2" Grid.RowSpan="6" Margin="15 15"/>
-        <Button x:Name="buttonFromFin" Grid.Row="0" Grid.Column="2" Margin="0.4,10,14.6,10.4" Height="Auto" Click="buttonFromFin_Click" Cursor="Hand">Ввод точек из файла</Button>
-        <Button x:Name="buttonFromRandom" Grid.Row="1" Grid.Column="2" Margin="0.4,10.2,14.6,10.2" Height="Auto" Click="buttonFromRandom_Click">Генерация</Button>
-        <Button x:Name="buttonTriangulation" Grid.Row="2" Grid.Column="2" Margin="0.4,9.8,14.6,9.8" Click="buttonTriangulation_Click" Height="Auto" Cursor="Hand">Триангуляция</Button>
-        <Button x:Name="buttonMinimumSpanningTree" Grid.Row="3" Grid.Column="2" Margin="0.4,9.6,14.6,10" Click="buttonMinimumSpanningTree_Click" Height="Auto">Минимальное остовное дерево</Button>
-        <Button x:Name="buttonClear" Grid.Row="4" Grid.Column="2" Margin="0.4,9.6,14.6,10" Click="buttonClear_Click" Height="Auto" Cursor="Hand">Очистить</Button>
-        <Button x:Name="buttonFout" Grid.Row="5" Grid.Column="2" Margin="0.4,9.8,14.6,9.8" Click="buttonFout_Click" Height="Auto">Вывод точек в файл</Button>
+        <Button x:Name="buttonFromFin" Grid.Row="0" Grid.Column="2" Margin="0.4,10,14.6,10.4" Height="Auto" Click="buttonFromFin_Click" Cursor="Hand">Get points from file</Button>
+        <Button x:Name="buttonFromRandom" Grid.Row="1" Grid.Column="2" Margin="0.4,10.2,14.6,10.2" Height="Auto" Click="buttonFromRandom_Click">Generating points</Button>
+        <Button x:Name="buttonTriangulation" Grid.Row="2" Grid.Column="2" Margin="0.4,9.8,14.6,9.8" Click="buttonTriangulation_Click" Height="Auto" Cursor="Hand">Delaunay triangulation</Button>
+        <Button x:Name="buttonMinimumSpanningTree" Grid.Row="3" Grid.Column="2" Margin="0.4,9.6,14.6,10" Click="buttonMinimumSpanningTree_Click" Height="Auto">Minimum spanning tree</Button>
+        <Button x:Name="buttonClear" Grid.Row="4" Grid.Column="2" Margin="0.4,9.6,14.6,10" Click="buttonClear_Click" Height="Auto" Cursor="Hand">Clear</Button>
+        <Button x:Name="buttonFout" Grid.Row="5" Grid.Column="2" Margin="0.4,9.8,14.6,9.8" Click="buttonFout_Click" Height="Auto" Cursor="Hand">Save points to file</Button>
     </Grid>
 </Window>

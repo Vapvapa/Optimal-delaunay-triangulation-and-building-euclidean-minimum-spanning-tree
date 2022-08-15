@@ -75,7 +75,7 @@ namespace DelaunayTriangulation
                 Filter = "Text documents (.txt)|*.txt"
             };
 
-            string text = "Coordinates of points:";
+            string text = "x y";
             for (int i = 0; i < points.Count; i++)
             {
                 text += "\n" + Math.Round(points[i].X * 10, 2) + " " + Math.Round(points[i].Y * 10, 2);
@@ -93,7 +93,7 @@ namespace DelaunayTriangulation
         {
             List<Point> points = new List<Point>();
             Random random = new Random();
-            int pointsCount = random.Next(6, 10);
+            int pointsCount = random.Next(10, 12);
             double x, y;
 
             for (int i = 0; i < pointsCount; i++)

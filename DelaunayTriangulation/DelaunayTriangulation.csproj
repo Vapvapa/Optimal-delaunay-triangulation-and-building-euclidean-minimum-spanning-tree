@@ -8,8 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignColors" Version="2.0.6" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icon.png" />
   </ItemGroup>
 
 </Project>
